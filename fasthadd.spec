@@ -40,6 +40,7 @@ g++ -O2 -o fastHadd ROOTFilePB.pb.cc fastHadd.cc `pkg-config --libs protobuf` `r
 rm -rf %{buildroot}
 mkdir -p %{buildroot}%{_bindir}/
 cp -p %{name}/fastHadd %{buildroot}%{_bindir}/
+cp -p %{name}/fastParallelHadd.py %{buildroot}%{_bindir}/
 
 %check
 mkdir -p test
@@ -47,8 +48,9 @@ pushd test
 cp ../%{name}/fastHadd .
 for f in %{files_for_build}; do cp %{_builddir}/cmssw-%{commit}/DQMServices/Components/test/${f} .; done
 export PATH=./:${PATH}
+echo $PATH
 . ./run_fastHadd_tests.sh
-if [ $? != 0 ]; then
+if [ $? -ne 0 ]; then
   exit $?
 fi
 popd
@@ -62,6 +64,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %doc
 %{_bindir}/fastHadd
-
+%{_bindir}/fastParallelHadd.py*
 
 %changelog
